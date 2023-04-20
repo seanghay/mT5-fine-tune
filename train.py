@@ -55,8 +55,7 @@ tokenized_datasets = raw_datasets.map(preprocess_function, batched=True, num_pro
 print("tokenized_datasets:")
 print(tokenized_datasets)
 
-def compute_metrics(eval_pred):
-  predictions, labels = eval_pred
+def compute_metrics(predictions, labels):
   decoded_preds = tokenizer.batch_decode(predictions, skip_special_tokens=True)
   
   labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
