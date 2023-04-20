@@ -11,17 +11,20 @@ OUTPUT_DIR = "outputs/mt5-base-koh-233k"
 
 NUM_PROC=8
 SEED = 10
-MAX_INPUT_LENGTH = 1024
+MAX_INPUT_LENGTH = 2048
 MAX_TARGET_LENGTH = 128
 INPUT_PREFIX="summarize:"
 TRAIN_BATCH_SIZE=8
 EVAL_BATCH_SIZE=8
+GRADIENT_ACCUMULATION_STEPS=1
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 tokenizer = MT5Tokenizer.from_pretrained(MODEL_NAME, use_auth_token=True)
 model = MT5ForConditionalGeneration.from_pretrained(MODEL_NAME, use_auth_token=True).to(device)
 data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)
 metric = evaluate.load("rouge")
+
+model.config.use_cache = False
 
 print(f"device: {device}")
 
@@ -78,6 +81,9 @@ training_args = Seq2SeqTrainingArguments(
     output_dir=OUTPUT_DIR,
     per_device_train_batch_size=TRAIN_BATCH_SIZE,
     per_device_eval_batch_size=EVAL_BATCH_SIZE,
+    gradient_checkpointing=True,
+    gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,
+    warmup_steps=800,
     warmup_steps=800,
     max_steps=8000,
     learning_rate=6.25e-6,
