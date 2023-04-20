@@ -11,7 +11,7 @@ OUTPUT_DIR = "outputs/mt5-base-koh-233k"
 
 NUM_PROC=8
 SEED = 10
-MAX_INPUT_LENGTH = 2048
+MAX_INPUT_LENGTH = 20
 MAX_TARGET_LENGTH = 128
 INPUT_PREFIX="summarize:"
 TRAIN_BATCH_SIZE=8
@@ -83,7 +83,6 @@ training_args = Seq2SeqTrainingArguments(
     per_device_eval_batch_size=EVAL_BATCH_SIZE,
     gradient_checkpointing=True,
     gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,
-    warmup_steps=800,
     warmup_steps=800,
     max_steps=8000,
     learning_rate=6.25e-6,
