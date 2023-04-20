@@ -1,0 +1,10 @@
+torch>=1.7
+accelerate
+git+https://github.com/huggingface/transformers
+git+https://github.com/huggingface/datasets
+evaluate
+more-itertools
+tensorboard
+khmer-nltk
+rouge-score
+sentencepiece
