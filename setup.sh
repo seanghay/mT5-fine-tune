@@ -10,7 +10,7 @@ sudo apt-get install git-lfs -y
 echo "3. Create venv"
 python3 -m venv hf_env
 source hf_env/bin/activate
-echo "source ~/hf_env/bin/activate" >> ~/.bashrc
+echo "source $(pwd)/hf_env/bin/activate" >> ~/.bashrc
 
 echo "4. Install deps"
 pip install -r requirements.txt

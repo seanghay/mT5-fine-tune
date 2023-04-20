@@ -17,11 +17,12 @@ INPUT_PREFIX="summarize:"
 TRAIN_BATCH_SIZE=8
 EVAL_BATCH_SIZE=8
 GRADIENT_ACCUMULATION_STEPS=1
+label_pad_token_id = -100
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 tokenizer = MT5Tokenizer.from_pretrained(MODEL_NAME, use_auth_token=True)
 model = MT5ForConditionalGeneration.from_pretrained(MODEL_NAME, use_auth_token=True).to(device)
-data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)
+data_collator = DataCollatorForSeq2Seq(tokenizer, model=model, label_pad_token_id=label_pad_token_id, pad_to_multiple_of=8)
 metric = evaluate.load("rouge")
 
 model.config.use_cache = False
