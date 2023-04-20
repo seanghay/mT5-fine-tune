@@ -44,8 +44,8 @@ print(f"tokenizer can decode and encode: {check_tokenizer()}")
 
 def preprocess_function(examples):
     inputs = [INPUT_PREFIX + doc for doc in examples["document"]]
-    model_inputs = tokenizer(inputs, max_length=MAX_INPUT_LENGTH, truncation=True, padding="max_length")
-    labels = tokenizer(examples["summary"], max_length=MAX_TARGET_LENGTH, truncation=True, padding="max_length")
+    model_inputs = tokenizer(inputs, max_length=MAX_INPUT_LENGTH, truncation=True)
+    labels = tokenizer(examples["summary"], max_length=MAX_TARGET_LENGTH, truncation=True)
     model_inputs["labels"] = labels["input_ids"]
     return model_inputs
 
@@ -81,24 +81,18 @@ training_args = Seq2SeqTrainingArguments(
     output_dir=OUTPUT_DIR,
     per_device_train_batch_size=TRAIN_BATCH_SIZE,
     per_device_eval_batch_size=EVAL_BATCH_SIZE,
-    gradient_checkpointing=True,
-    gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,
-    warmup_steps=800,
-    max_steps=8000,
-    learning_rate=6.25e-6,
-    weight_decay=0.01,
     predict_with_generate=True,
-    logging_steps=25,
-    report_to=["tensorboard"],
-    evaluation_strategy="steps",
-    eval_steps=1000,
-    save_strategy="steps",
-    save_steps=1000,
-    load_best_model_at_end=True,
-    metric_for_best_model="rouge",
-    greater_is_better=False,
-    push_to_hub=True,
     fp16=True,
+    learning_rate=5e-5,
+    num_train_epochs=5,
+    logging_strategy="steps",
+    logging_steps=500,
+    evaluation_strategy="epoch",
+    save_strategy="epoch",
+    save_total_limit=2,
+    load_best_model_at_end=True,
+    report_to="tensorboard",
+    push_to_hub=True,
 )
 
 trainer = Seq2SeqTrainer(
@@ -115,5 +109,3 @@ trainer.train()
 model.save_pretrained(training_args.output_dir)
 tokenizer.save_pretrained(training_args.output_dir)
 trainer.push_to_hub()
-
-
